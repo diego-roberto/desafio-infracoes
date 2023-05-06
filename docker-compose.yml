@@ -1,0 +1,90 @@
+version: '3.7'
+networks:
+  network:
+    driver: bridge
+services:
+
+  # --------------------------
+  # Infrações API
+  # --------------------------
+  infracoes-api:
+    image: 'infracoes-api:latest'
+    build:
+      context: ./infracoes-api
+      dockerfile: docker/Dockerfile
+    container_name: infracoes-api
+    hostname: infracoes-api
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgresql:5432/infracoes'
+      DB_DRIVER_CLASS: org.postgresql.Driver
+      SPRING_DATASOURCE_USERNAME: api-user
+      SPRING_DATASOURCE_PASSWORD: topsecret
+      CORS_ORIGIN: '*'
+      CORS_WEBSOCKET_ALLOWED_HOST: '*'
+      CORS_METHODS: 'GET,POST,PUT,PATCH,DELETE,OPTIONS,HEAD'
+      CORS_ALLOW_HEADERS: 'Authorization,Content-Type,X-Authorization,authorization,content-type,x-authorization'
+      CORS_ALLOW_CREDENTIALS: 'true'
+      SERVICE_NAME: infracoes-api
+      TZ: America/Sao_Paulo
+    volumes:
+      - './infracoes-api:/app'
+      - './infracoes-api/.m2:/root/.m2'
+    working_dir: /app
+    networks:
+      - network
+    depends_on:
+      - postgresql
+    ports:
+      - '8401:8080'
+    restart: always
+
+  # --------------------------
+  # Simulador de Radar
+  # --------------------------
+  radar:
+    image: 'radar:latest'
+    build:
+      context: ./radar
+      dockerfile: docker/Dockerfile
+    container_name: radar
+    hostname: radar
+    environment:
+      INFRACOES_API_URL: http://infracoes-api:8080
+      TZ: America/Sao_Paulo
+    volumes:
+      - './radar:/app'
+    working_dir: /app
+    networks:
+      - network
+    depends_on:
+      - infracoes-api
+
+  # --------------------------
+  # PostgreSQL Database
+  # --------------------------
+  postgresql:
+    image: 'postgres:13-alpine'
+    container_name: postgresql
+    hostname: postgresql
+    environment:
+      POSTGRES_PASSWORD: topsecret
+      POSTGRES_USER: api-user
+      POSTGRES_DB: infracoes
+    ports:
+      - '5432:5432'
+    networks:
+      - network
+    volumes:
+      - 'postgres-data:/var/lib/postgresql/data'
+    command: postgres
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U api-user -d infracoes
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: always
+
+volumes:
+  postgres-data: null
