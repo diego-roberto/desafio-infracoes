@@ -1,8 +1,7 @@
-<app-navbar></app-navbar>
-
 <mat-card style="padding-bottom: 20px">
     <mat-card-header>Infrações</mat-card-header>
     <mat-card-content>
-        <infracao-list [infracao]="infracao"></infracao-list>
+      <infracao-list [dataSource]="dataSource" [infracoes]="infracoes"></infracao-list>
     </mat-card-content>
-</mat-card>
+  </mat-card>
+  

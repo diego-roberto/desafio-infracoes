@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Infracao } from 'src/app/shared/model/Infracao';
-import { InfracaoService } from 'src/app/shared/service/infracao.service';
-
 
 @Component({
   selector: 'infracao-list',
@@ -10,27 +10,25 @@ import { InfracaoService } from 'src/app/shared/service/infracao.service';
   styleUrls: ['./list.component.scss']
 })
 
-export class InfracaoListComponent implements OnInit {
+export class InfracaoListComponent {
 
   @Input()
-  infracao!: Infracao;
   infracoes!: Infracao[];
+
+  @Input()
+  dataSource!: MatTableDataSource<Infracao>;
+
+  @ViewChild(MatPaginator)
+  paginator!: MatPaginator;
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
 
 constructor(
   private router: Router,
   private route: ActivatedRoute,
-  private infracaoService: InfracaoService
 ){}
-
-  ngOnInit() {
-    this.fetchInfracoes();
-  }
-
-  fetchInfracoes() {
-    this.infracaoService.getInfracaoList().subscribe((response) => {
-      this.infracoes = response;
-    });
-  }
 
   redirectTo(path: any) {
     this.router.navigate([path], { relativeTo: this.route });

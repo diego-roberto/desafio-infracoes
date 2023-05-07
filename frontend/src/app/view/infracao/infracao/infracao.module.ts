@@ -12,7 +12,7 @@ import { InfracaoRoutingModule } from './infracao.routing.module';
   ],
   declarations: [
     InfracaoListComponent,
-    OverviewComponent,
+    OverviewComponent
   ],
   entryComponents: [
     OverviewComponent,
