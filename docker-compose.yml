@@ -67,7 +67,6 @@ services:
       SERVICE_NAME: frontend
       TZ: America/Sao_Paulo
       FRONTEND_PROFILE: dev
-      FRONTEND_BACKEND_URL: 'http://localhost:8080'
     networks:
       - network
     restart: always
