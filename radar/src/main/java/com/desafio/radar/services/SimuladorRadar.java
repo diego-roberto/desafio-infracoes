@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SimuladorRadar {
 
-    private static final String INFRACAO_API_URL = "http://localhost:8080/infracoes";
+    private static final String INFRACAO_API_URL = "http://infracoes-api:8080/infracoes";
 
     @PostConstruct
     public void startSimulation() {

@@ -8,7 +8,6 @@ services:
   # Infrações API
   # --------------------------
   infracoes-api:
-    image: 'infracoes-api:latest'
     build:
       context: ./infracoes-api
       dockerfile: docker/Dockerfile
@@ -26,23 +25,19 @@ services:
       CORS_ALLOW_CREDENTIALS: 'true'
       SERVICE_NAME: infracoes-api
       TZ: America/Sao_Paulo
-    volumes:
-      - './infracoes-api:/app'
-      - './infracoes-api/.m2:/root/.m2'
     working_dir: /app
     networks:
       - network
     depends_on:
       - postgresql
     ports:
-      - '8401:8080'
+      - '8080:8080'
     restart: always
 
   # --------------------------
   # Simulador de Radar
   # --------------------------
   radar:
-    image: 'radar:latest'
     build:
       context: ./radar
       dockerfile: docker/Dockerfile
@@ -51,13 +46,31 @@ services:
     environment:
       INFRACOES_API_URL: http://infracoes-api:8080
       TZ: America/Sao_Paulo
-    volumes:
-      - './radar:/app'
     working_dir: /app
     networks:
       - network
     depends_on:
       - infracoes-api
+
+  # --------------------------
+  # Front-End
+  # --------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: docker/Dockerfile
+    container_name: frontend
+    hostname: frontend
+    ports:
+      - "8081:80"
+    environment:
+      SERVICE_NAME: frontend
+      TZ: America/Sao_Paulo
+      FRONTEND_PROFILE: dev
+      FRONTEND_BACKEND_URL: 'http://localhost:8080'
+    networks:
+      - network
+    restart: always
 
   # --------------------------
   # PostgreSQL Database
