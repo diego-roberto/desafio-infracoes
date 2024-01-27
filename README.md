@@ -12,7 +12,7 @@ Projeto consiste em uma API REST para Infrações, um Serviço simulador de infr
 <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white"/>
 </h3>
 
-API em Java 11 com spring-boot 2.7.11, padrão MVC.</br>
+API em Java 11 com spring-boot 2.7.11.</br>
 API de Serviço Java 11 com spring-boot 2.7.11.</br>
 Frontend em Angular 15.2.0.</br>
 Database utiliza PostgreSQL 13.</br>
